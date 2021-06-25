@@ -6,9 +6,12 @@ const SimpleInput = (props) => {
   const [EnteredNameIsValid, SetEnteredNameIsValid] = useState(true);
   const [focus, setFocus] = useState(false);
 
+  const enteredNameIsValid = enteredName.trim() !== "";
+  const nameInputIsValid = !enteredNameIsValid && focus;
+
   const handleOnFocus = () => {
     setFocus(true);
-    if (enteredName.trim() === "") {
+    if (nameInputIsValid) {
       setPlaceHolder("Type something");
       SetEnteredNameIsValid(false);
       return;
@@ -24,7 +27,7 @@ const SimpleInput = (props) => {
     e.preventDefault();
 
     const enteredValue = nameInputRef.current.value;
-    if (enteredName.trim() === "") {
+    if (!enteredNameIsValid) {
       setPlaceHolder("Type something");
       SetEnteredNameIsValid(false);
       return;
