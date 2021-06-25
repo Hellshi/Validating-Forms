@@ -49,15 +49,9 @@ body {
   max-width: 100%;
 }
 
-.form-control-false input,
-.form-control-false select {
-  font: inherit;
-  padding: 0.5rem;
-  border-radius: 4px;
+.invalid input {
   border: 1px solid rgba(255, 100, 100, 0.25);
   background-color: rgba(255, 100, 100, 0.25);
-  width: 20rem;
-  max-width: 100%;
 }
 
 .form-control-false input:focus {
@@ -99,6 +93,13 @@ button:active {
   border-color: #33059e;
 }
 
+button:disabled {
+  background-color: #ccc;
+  color: #3f3f3f;
+  border: #3f3f3f;
+  cursor: auto;
+}
+
 .form-actions {
   text-align: right;
 }
@@ -107,7 +108,7 @@ button:active {
   margin-left: 1rem;
 }
 
-.invalid input {
+.invalid {
   border: 1px solid #b40e0e;
   background-color: #fddddd;
 }

@@ -1,64 +1,101 @@
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 const SimpleInput = (props) => {
-  const nameInputRef = useRef();
-  const [enteredName, setEnteredName] = useState("");
-  const [placeholder, setPlaceHolder] = useState("");
-  const [EnteredNameIsValid, SetEnteredNameIsValid] = useState(true);
-  const [focus, setFocus] = useState(false);
+  const [inputName, setInputName] = useState("");
+  const [inputEmail, setInputEmail] = useState("");
+  const [formIsValid, setFormIsValid] = useState(false);
+  const [ClassName, setClassName] = useState("name");
+  const [ClassEmail, setClassEmail] = useState("email");
+  const [errorMessageName, setErrorMessageName] = useState(true);
+  const [errorMessageEmail, setErrorMessageEmail] = useState(true);
 
-  const enteredNameIsValid = enteredName.trim() !== "";
-  const nameInputIsValid = !enteredNameIsValid && focus;
+  const nameIsValid = inputName.trim() !== "";
+  const emailIsValid =
+    (inputEmail.trim() !== "" &&
+      inputEmail.includes("@") &&
+      inputEmail.includes(".com")) ||
+    inputEmail.includes(".com.br");
 
-  const handleOnFocus = () => {
-    setFocus(true);
-    if (nameInputIsValid) {
-      setPlaceHolder("Type something");
-      SetEnteredNameIsValid(false);
-      return;
+  useEffect(() => {
+    if (nameIsValid && emailIsValid) {
+      setFormIsValid(true);
+    } else {
+      setFormIsValid(false);
     }
-  };
-
-  const handleInput = (e) => {
-    setEnteredName(e.target.value);
-    SetEnteredNameIsValid(true);
-  };
+  }, [nameIsValid, emailIsValid]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log({
+      inputName,
+      inputEmail,
+    });
 
-    const enteredValue = nameInputRef.current.value;
-    if (!enteredNameIsValid) {
-      setPlaceHolder("Type something");
-      SetEnteredNameIsValid(false);
-      return;
+    setInputEmail("");
+    setInputName("");
+  };
+
+  const handleEmailInput = (e) => {
+    setInputEmail(e.target.value);
+    setErrorMessageEmail(true);
+  };
+
+  const handleNameInput = (e) => {
+    setInputName(e.target.value);
+    setErrorMessageName(true);
+  };
+
+  const handleOnFocus = (IsValid, className) => {
+    if (!IsValid) {
+      if (className === "Name") {
+        setClassName("invalid");
+        setErrorMessageName(false);
+      } else {
+        setClassEmail("invalid");
+        setErrorMessageEmail(false);
+      }
+    } else {
+      setClassName("");
     }
-    console.log(enteredValue);
-    setPlaceHolder("");
-    setEnteredName("");
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div
-        className={
-          EnteredNameIsValid
-            ? "form-control"
-            : `form-control-${EnteredNameIsValid}`
-        }
-      >
+      <div className="form-control">
         <label htmlFor="name">Your Name</label>
         <input
-          onBlur={handleOnFocus}
-          ref={nameInputRef}
-          placeholder={placeholder}
-          onChange={handleInput}
-          value={enteredName}
+          className={ClassName}
+          onBlur={() => {
+            handleOnFocus(nameIsValid, "Name");
+          }}
+          onChange={handleNameInput}
+          value={inputName}
           type="text"
           id="name"
         />
+        {!errorMessageName ? (
+          <p className="error-text">'Type an valid name'</p>
+        ) : (
+          ""
+        )}
+        <label htmlFor="email">Your Email</label>
+        <input
+          className={ClassEmail}
+          onBlur={() => {
+            handleOnFocus(emailIsValid, "Email");
+          }}
+          onChange={handleEmailInput}
+          value={inputEmail}
+          type="text"
+          id="email"
+        />
+        {!errorMessageEmail ? (
+          <p className="error-text">'Type an valid email'</p>
+        ) : (
+          ""
+        )}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
